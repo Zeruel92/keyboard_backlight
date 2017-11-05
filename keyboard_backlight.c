@@ -5,12 +5,18 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-int main(){
+int main(int argc,char *argv[]){
         pid_t child;
         int fd;
         int mode = (S_IRUSR | S_IWUSR);
-
-        if((fd=open("/tmp/keyboard.lock", O_CREAT|O_TRUNC|O_EXCL, mode))>0) {
+        int reset=0;
+        if(argc==2) {
+                if(strcmp("reset",argv[1])) {
+                        reset=1;
+                        printf("reset enabled\n");
+                }
+        }
+        if(((fd=open("/tmp/keyboard.lock", O_CREAT|O_TRUNC|O_EXCL, mode))>0) || (reset==1)) {
                 printf("File lock creato\n");
                 if((child = fork())< 0) {
                         printf("Errore nella fork\n");
